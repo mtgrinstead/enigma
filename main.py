@@ -38,6 +38,7 @@ REFLECTOR = Wheel(['Q', 'Y', 'H', 'O', 'G', 'N', 'E', 'C', 'V', 'P', 'U', 'Z', '
 plug_list = []
 plugs = ""
 
+# Adding plug pairs and checking to see if the letter is already in use
 plugging = True
 while plugging:
     if plugs != "Q":
@@ -55,6 +56,26 @@ while plugging:
     else:
         plugging = False
 
+# Changing alpha with the swaps made in the plug board
+alpha = INPUT.chars
+for pair in plug_list:
+    pair_num = 0
+    for letter in alpha:
+        if letter == pair[0]:
+            index = alpha.index(letter)
+            alpha[index] = ""
+        if letter == pair[1]:
+            index = alpha.index(letter)
+            alpha[index] = pair[0]
+            pair_num += 1
+        else:
+            pass
+    for letter in alpha:
+        if letter == "":
+            index = alpha.index(letter)
+            alpha[index] = pair[1]
+
+print(alpha)
 
 characters = input(f"Enter characters: \n")
 
@@ -68,7 +89,6 @@ def enigma(code, first_wheel, second_wheel, third_wheel):
 
     def wheel_2_rotate():
         pass
-# Starting Index should take tuples to switch the alphabet then use this alphabet in trace
 
 # input M will return F
     def trace():
@@ -95,7 +115,6 @@ def enigma(code, first_wheel, second_wheel, third_wheel):
         final = wheel_1_return
         output.append(final)
 
-    alpha = INPUT
     w1 = first_wheel
     w2 = second_wheel
     w3 = third_wheel
