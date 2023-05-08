@@ -59,7 +59,8 @@ while plugging:
 # Changing alpha with the swaps made in the plug board
 alpha = INPUT.chars
 for pair in plug_list:
-    pair_num = 0
+    if alpha.index(pair[0]) > alpha.index(pair[1]):
+        pair = pair[::-1]
     for letter in alpha:
         if letter == pair[0]:
             index = alpha.index(letter)
@@ -67,7 +68,6 @@ for pair in plug_list:
         if letter == pair[1]:
             index = alpha.index(letter)
             alpha[index] = pair[0]
-            pair_num += 1
         else:
             pass
     for letter in alpha:
@@ -75,63 +75,61 @@ for pair in plug_list:
             index = alpha.index(letter)
             alpha[index] = pair[1]
 
-print(alpha)
+    print(alpha)
 
-characters = input(f"Enter characters: \n")
+characters = input(f"Enter characters: \n").upper()
 
 
 def enigma(code, first_wheel, second_wheel, third_wheel):
     output = []
-    count = 0
+    wheel_1_count = 0
+    wheel_2_count = 0
 
     def wheel_rotate(lst):
         return lst[1:] + [lst[0]]
 
-    def wheel_2_rotate():
-        pass
+    # input M will return F
 
-# input M will return F
     def trace():
 
         # need to add a count function
-        index = INPUT.chars.index(letter)
-        wheel_1_output = w1.chars[index]
-        wheel_1_output_index = (INPUT.chars.index(wheel_1_output) - count)
+        char_index = alpha.index(letter)
+        wheel_1_output = w1.chars[char_index]
+        wheel_1_output_index = (alpha.index(wheel_1_output) - wheel_1_count)
         if wheel_1_output_index < 0:
             wheel_1_output_index += 26
         elif wheel_1_output_index > 25:
             wheel_1_output_index -= 26
         wheel_2_output = w2.chars[wheel_1_output_index]
-        wheel_3_output = w3.chars[INPUT.chars.index(wheel_2_output)]
-        reflector_output = REFLECTOR.chars[INPUT.chars.index(wheel_3_output)]
-        wheel_3_return = INPUT.chars[w3.chars.index(reflector_output)]
-        wheel_3_return_index = (w2.chars.index(wheel_3_return) + count)
+        wheel_3_output = w3.chars[alpha.index(wheel_2_output)]
+        reflector_output = REFLECTOR.chars[alpha.index(wheel_3_output)]
+        wheel_3_return = alpha[w3.chars.index(reflector_output)]
+        wheel_3_return_index = (w2.chars.index(wheel_3_return) + wheel_1_count)
         if wheel_3_return_index < 0:
             wheel_3_return_index += 26
         elif wheel_3_return_index > 25:
             wheel_3_return_index -= 26
-        wheel_2_return = INPUT.chars[wheel_3_return_index]
-        wheel_1_return = INPUT.chars[w1.chars.index(wheel_2_return)]
+        wheel_2_return = alpha[wheel_3_return_index]
+        wheel_1_return = alpha[w1.chars.index(wheel_2_return)]
         final = wheel_1_return
         output.append(final)
 
     w1 = first_wheel
     w2 = second_wheel
     w3 = third_wheel
-    for letter in code:
+    for char in code:
         w1.chars = wheel_rotate(w1.chars)
-        # print("__--__")
         if w1.chars[-1] != w1.notch:
-            count += 1
+            wheel_1_count += 1
             trace()
             # print("A")
         elif w1.chars[-1] == w1.notch:
-            count += 1
+            wheel_1_count += 1
             w2.chars = wheel_rotate(w2.chars)
             trace()
-            wheel_2_rotate()
             print("B")
         if w2.chars[-1] == w2.notch and w1.chars[-1] == w1.notch:
+            wheel_2_count += 1
             w3.chars = wheel_rotate(w3.chars)
             print("C")
     return output
